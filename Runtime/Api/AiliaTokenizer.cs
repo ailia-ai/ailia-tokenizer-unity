@@ -107,7 +107,7 @@ public class AiliaTokenizer
     /**
     * \~japanese
     * @def AILIA_TOKENIZER_TYPE_ROBERTA
-    * @brief  RoBERTa向けのトークナイザ
+    * @brief RoBERTa向けのトークナイザ
     *
     * \~english
     * @def AILIA_TOKENIZER_TYPE_ROBERTA
@@ -129,7 +129,7 @@ public class AiliaTokenizer
     /**
     * \~japanese
     * @def AILIA_TOKENIZER_TYPE_GPT2
-    * @brief  GPT2向けのトークナイザ
+    * @brief GPT2向けのトークナイザ
     *
     * \~english
     * @def AILIA_TOKENIZER_TYPE_GPT2
@@ -140,13 +140,24 @@ public class AiliaTokenizer
     /**
     * \~japanese
     * @def AILIA_TOKENIZER_TYPE_LLAMA
-    * @brief  LLAMA向けのトークナイザ
+    * @brief LLAMA向けのトークナイザ
     *
     * \~english
     * @def AILIA_TOKENIZER_TYPE_LLAMA
     * @brief Tokenizer for LLAMA
     */
     public const Int32 AILIA_TOKENIZER_TYPE_LLAMA = (10);
+
+    /**
+    * \~japanese
+    * @def AILIA_TOKENIZER_TYPE_GEMMA
+    * @brief GEMMA向けのトークナイザ
+    *
+    * \~english
+    * @def AILIA_TOKENIZER_TYPE_GEMMA
+    * @brief Tokenizer for GEMMA
+    */
+    public const Int32 AILIA_TOKENIZER_TYPE_GEMMA = (11);
 
     /****************************************************************
     * フラグ定義
@@ -318,7 +329,7 @@ public class AiliaTokenizer
     * @return
     *   成功した場合は \ref AILIA_STATUS_SUCCESS 、そうでなければエラーコードを返す。
     * @details
-    *   追加トークンファイル (json) を読み込みます。AILIA_TOKENIZER_TYPE_WHISPERの場合のみ有効です。
+    *   追加トークンファイル (json) を読み込みます。AILIA_TOKENIZER_TYPE_WHISPERもしくはAILIA_TOKENIZER_TYPE_XLM_ROBERTAの場合のみ有効です。
     *
     * \~english
     * @brief Open added tokens file.
@@ -327,7 +338,7 @@ public class AiliaTokenizer
     * @return
     *   If this function is successful, it returns  \ref AILIA_STATUS_SUCCESS , or an error code otherwise.
     * @details
-    *   Open a added tokens file (json). This API only requires for AILIA_TOKENIZER_TYPE_WHISPER.
+    *   Open a added tokens file (json). This API only requires for AILIA_TOKENIZER_TYPE_WHISPER or AILIA_TOKENIZER_TYPE_XLM_ROBERTA.
     */
     #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
         [DllImport(LIBRARY_NAME, EntryPoint = "ailiaTokenizerOpenAddedTokensFileW", CharSet=CharSet.Unicode)]
