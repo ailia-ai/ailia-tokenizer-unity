@@ -159,6 +159,17 @@ public class AiliaTokenizer
     */
     public const Int32 AILIA_TOKENIZER_TYPE_GEMMA = (11);
 
+    /**
+     * \~japanese
+     * @def AILIA_TOKENIZER_TYPE_QWEN2
+     * @brief Qwen2向けのトークナイザ（NFC正規化とQwen2の事前分割）
+     *
+     * \~english
+     * @def AILIA_TOKENIZER_TYPE_QWEN2
+     * @brief Tokenizer for Qwen2 with NFC normalization and Qwen2 pretokenization
+     */
+    public const Int32 AILIA_TOKENIZER_TYPE_QWEN2 = (12);
+
     /****************************************************************
     * フラグ定義
     **/
@@ -275,7 +286,7 @@ public class AiliaTokenizer
     * @return
     *   成功した場合は \ref AILIA_STATUS_SUCCESS 、そうでなければエラーコードを返す。
     * @details
-    *   単語ファイル (ROBERTAとWHISPERとGPT2はjson、それ以外はtxt) を読み込みます。
+    *   単語ファイル (ROBERTAとWHISPERとGPT2とQWEN2はjson、それ以外はtxt) を読み込みます。
     *
     * \~english
     * @brief Open vocab file.
@@ -284,7 +295,7 @@ public class AiliaTokenizer
     * @return
     *   If this function is successful, it returns  \ref AILIA_STATUS_SUCCESS , or an error code otherwise.
     * @details
-    *   Open a vocab file (json for ROBERTA or WHISPER or GPT2, txt for others).
+    *   Open a vocab file (json for ROBERTA or WHISPER or GPT2 or QWEN2, txt for others).
     */
     #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
         [DllImport(LIBRARY_NAME, EntryPoint = "ailiaTokenizerOpenVocabFileW", CharSet=CharSet.Unicode)]
@@ -302,7 +313,7 @@ public class AiliaTokenizer
     * @return
     *   成功した場合は \ref AILIA_STATUS_SUCCESS 、そうでなければエラーコードを返す。
     * @details
-    *   マージファイル (txt) を読み込みます。AILIA_TOKENIZER_TYPE_ROBERTAもしくはAILIA_TOKENIZER_TYPE_WHISPERもしくはAILIA_TOKENIZER_TYPE_GPT2の場合のみ有効です。
+    *   マージファイル (txt) を読み込みます。AILIA_TOKENIZER_TYPE_ROBERTAもしくはAILIA_TOKENIZER_TYPE_WHISPERもしくはAILIA_TOKENIZER_TYPE_GPT2もしくはAILIA_TOKENIZER_TYPE_QWEN2の場合のみ有効です。
     *
     * \~english
     * @brief Open merges file.
@@ -311,7 +322,7 @@ public class AiliaTokenizer
     * @return
     *   If this function is successful, it returns  \ref AILIA_STATUS_SUCCESS , or an error code otherwise.
     * @details
-    *   Open a merge file (txt). This API only requires for AILIA_TOKENIZER_TYPE_ROBERTA or AILIA_TOKENIZER_TYPE_WHISPER or AILIA_TOKENIZER_TYPE_GPT2.
+    *   Open a merge file (txt). This API only requires for AILIA_TOKENIZER_TYPE_ROBERTA or AILIA_TOKENIZER_TYPE_WHISPER or AILIA_TOKENIZER_TYPE_GPT2 or AILIA_TOKENIZER_TYPE_QWEN2.
     */
     #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
         [DllImport(LIBRARY_NAME, EntryPoint = "ailiaTokenizerOpenMergeFileW", CharSet=CharSet.Unicode)]
@@ -329,7 +340,7 @@ public class AiliaTokenizer
     * @return
     *   成功した場合は \ref AILIA_STATUS_SUCCESS 、そうでなければエラーコードを返す。
     * @details
-    *   追加トークンファイル (json) を読み込みます。AILIA_TOKENIZER_TYPE_WHISPERもしくはAILIA_TOKENIZER_TYPE_XLM_ROBERTAの場合のみ有効です。
+    *   追加トークンファイル (json) を読み込みます。AILIA_TOKENIZER_TYPE_WHISPERもしくはAILIA_TOKENIZER_TYPE_XLM_ROBERTAもしくはAILIA_TOKENIZER_TYPE_QWEN2の場合のみ有効です。QWEN2では先にvocabを読み込む必要があります。special属性はコンフィグから読み込みます。
     *
     * \~english
     * @brief Open added tokens file.
@@ -338,7 +349,7 @@ public class AiliaTokenizer
     * @return
     *   If this function is successful, it returns  \ref AILIA_STATUS_SUCCESS , or an error code otherwise.
     * @details
-    *   Open a added tokens file (json). This API only requires for AILIA_TOKENIZER_TYPE_WHISPER or AILIA_TOKENIZER_TYPE_XLM_ROBERTA.
+    *   Open an added tokens file (json) for WHISPER, XLM_ROBERTA or QWEN2. QWEN2 requires the vocab first. This flat file preserves IDs; special flags are read by OpenTokenizerConfigFile. Reloading the vocab after token registration returns INVALID_STATE.
     */
     #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
         [DllImport(LIBRARY_NAME, EntryPoint = "ailiaTokenizerOpenAddedTokensFileW", CharSet=CharSet.Unicode)]
@@ -356,7 +367,7 @@ public class AiliaTokenizer
     * @return
     *   成功した場合は \ref AILIA_STATUS_SUCCESS 、そうでなければエラーコードを返す。
     * @details
-    *   トークナイザコンフィグファイル (json) を読み込みます。AILIA_TOKENIZER_TYPE_BERTの場合のみ有効です。
+    *   トークナイザコンフィグファイル (json) を読み込みます。BERTおよびQWEN2で有効です。QWEN2ではvocabの後にtokenizer_config.jsonまたはtokenizer.jsonを読み込み、追加トークンのIDとspecial属性を登録します。
     *
     * \~english
     * @brief Open tokenizer config file.
@@ -365,7 +376,7 @@ public class AiliaTokenizer
     * @return
     *   If this function is successful, it returns  \ref AILIA_STATUS_SUCCESS , or an error code otherwise.
     * @details
-    *   Open a tokenizer config file (json). This API only requires for AILIA_TOKENIZER_TYPE_BERT.
+    *   Open a tokenizer config file (json) for BERT or QWEN2. For QWEN2, load tokenizer_config.json or tokenizer.json after the vocab to register explicit added-token IDs and special attributes.
     */
     #if (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
         [DllImport(LIBRARY_NAME, EntryPoint = "ailiaTokenizerOpenTokenizerConfigFileW", CharSet=CharSet.Unicode)]
@@ -694,7 +705,7 @@ public class AiliaTokenizer
     * @return
     *   成功した場合は \ref AILIA_STATUS_SUCCESS 、そうでなければエラーコードを返す。
     * @details
-    *   AILIA_TOKENIZER_TYPE_ROBERTAおよびAILIA_TOKENIZER_TYPE_GPT2の場合のみ有効です。
+    *   AILIA_TOKENIZER_TYPE_ROBERTA、AILIA_TOKENIZER_TYPE_GPT2、AILIA_TOKENIZER_TYPE_QWEN2の場合のみ有効です。先にvocabを読み込んでください。登録済みのトークンを追加した場合は無視され、既存のIDが維持されます。新規トークンのIDは登録順に採番されるため、学習済みモデルのID保持にはID付きファイルを使ってください。
     *
     * \~english
     * @brief Add SpecialToken
@@ -704,7 +715,7 @@ public class AiliaTokenizer
     * @return
     *   If this function is successful, it returns  \ref AILIA_STATUS_SUCCESS , or an error code otherwise.
     * @details
-    *   This is valid only for AILIA_TOKENIZER_TYPE_ROBERTA and AILIA_TOKENIZER_TYPE_GPT2.
+    *   This is valid for ROBERTA, GPT2 and QWEN2 after loading the vocab. Adding an already registered token is ignored and its existing ID is preserved, including duplicates in one call. New token IDs follow registration order; load explicit-ID files to preserve pretrained model IDs.
     */
     [DllImport(LIBRARY_NAME)]
     public static extern int ailiaTokenizerAddSpecialTokens(IntPtr net, IntPtr tokens, uint count);
